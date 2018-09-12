@@ -1,0 +1,157 @@
+version: "3.0"
+
+services:
+
+  api:
+    build:
+      context: .
+    image: es-task
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    depends_on:
+      - redis
+      - amqp
+    labels:
+      - "traefik.enable=true"   
+      - "traefik.backend=api"
+      - "traefik.port=3000"
+      - "traefik.frontend.entryPoints=http"
+      - "traefik.frontend.rule=PathPrefix:/"
+
+  auth:
+    build:
+      context: .
+    image: es-task
+    env_file: docker-compose.env
+    environment:
+      SERVICES: auth
+    depends_on:
+      - redis
+      - amqp
+    links:
+      - redis
+      - amqp
+
+
+  booking:
+    build:
+      context: .
+    image: es-task
+    env_file: docker-compose.env
+    environment:
+      SERVICES: booking
+    depends_on:
+      - redis
+      - amqp
+    links:
+      - redis
+      - amqp
+
+
+  appointment:
+    build:
+      context: .
+    image: es-task
+    env_file: docker-compose.env
+    environment:
+      SERVICES: appointment
+    depends_on:
+      - redis
+      - amqp
+      - mongo
+    links:
+      - redis
+      - amqp
+      - mongo
+
+  doctor:
+      build:
+        context: .
+      image: es-task
+      env_file: docker-compose.env
+      environment:
+        SERVICES: doctor
+      depends_on:
+        - redis
+        - amqp
+        - mongo
+      links:
+        - redis
+        - amqp
+        - mongo
+
+  patient:
+      build:
+        context: .
+      image: es-task
+      env_file: docker-compose.env
+      environment:
+        SERVICES: patient
+      depends_on:
+        - redis
+        - amqp
+        - mongo
+      links:
+        - redis
+        - amqp
+        - mongo
+
+
+  user:
+      build:
+        context: .
+      image: es-task
+      env_file: docker-compose.env
+      environment:
+        SERVICES: user
+      depends_on:
+        - redis
+        - amqp
+        - pg
+      links:
+        - redis
+        - amqp
+        - pg
+
+
+  redis:
+    image: redis:alpine
+    labels:
+      NAME: "redis"
+    ports:
+    - "6379:6379"
+
+  mongo:
+    image: mongo:latest
+    labels:
+      NAME: "mongo"
+    ports:
+    - "27017:27017"
+
+  pg:
+    image: postgres:alpine
+    labels:
+      NAME: "pg"
+    env_file: .env
+    ports:
+    - "5432:5432"
+
+  amqp:
+    image: rabbitmq:3
+    labels:
+      NAME: "rabbitmq"
+    ports:
+    - "5672:5672"
+
+
+  traefik:
+    image: traefik
+    command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false
+    ports:
+      - "3000:80"
+      - "3001:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml

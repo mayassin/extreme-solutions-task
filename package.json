@@ -1,0 +1,48 @@
+{
+  "name": "es-task",
+  "version": "1.0.0",
+  "description": "My Moleculer microservices project",
+  "scripts": {
+    "dev": "moleculer-runner --repl --hot services",
+    "start": "moleculer-runner",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint services"
+  },
+  "keywords": [
+    "microservices",
+    "moleculer"
+  ],
+  "author": "",
+  "devDependencies": {
+    "eslint": "^5.0.1",
+    "jest": "^23.3.0",
+    "jest-cli": "^23.3.0",
+    "moleculer-repl": "^0.5.0"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "dotenv": "^6.0.0",
+    "ioredis": "^3.2.2",
+    "moleculer": "^0.13.0",
+    "moleculer-db": "^0.7.5",
+    "moleculer-db-adapter-mongoose": "^0.7.1",
+    "moleculer-db-adapter-sequelize": "^0.1.9",
+    "moleculer-web": "^0.8.0",
+    "mongoose": "^5.2.14",
+    "mqtt": "^2.18.2",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2"
+  },
+  "engines": {
+    "node": ">= 8.x.x"
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "rootDir": "./services",
+    "roots": [
+      "../test"
+    ]
+  }
+}
